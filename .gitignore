@@ -1,0 +1,14 @@
+# for eclipse
+.classpath
+.project
+/.settings/
+/target/
+/contract/target/
+/service/target/
+
+# IntelliJ project files
+*.idea/*
+*.iml
+*.versionsBackup
+log/*
+LOGS_DIR_IS_UNDEFINED/*

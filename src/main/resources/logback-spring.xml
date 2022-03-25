@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<configuration debug="false">
+    <!-- 控制台输出 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <!-- addtivity，默认为true，将此loger的打印信息向上级传递；-->
+    <logger name="org.springframework" level="error">
+    </logger>
+    <!-- 日志输出级别 -->
+    <springProfile name="test,stable,sandbox,prod">
+        <!-- 按照每天生成日志文件 -->
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOGS_DIR}/service.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!--日志文件输出的文件名-->
+                <FileNamePattern>${LOGS_DIR}/service.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+                <!--日志文件保留天数-->
+                <maxFileSize>5GB</maxFileSize>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}┇%-5level┇[%thread]┇%logger{50}┇%msg%n</pattern>
+            </encoder>
+        </appender>
+
+
+        <appender name="ACCESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOGS_DIR}/access.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!--日志文件输出的文件名-->
+                <FileNamePattern>${LOGS_DIR}/access.%d{yyyy-MM-dd}.log</FileNamePattern>
+            </rollingPolicy>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <logger name="com.anjuke.content" level="info" additivity="false">
+            <appender-ref ref="FILE"/>
+        </logger>
+
+        <logger name="SCF_ACCESS_LOG" level="info" additivity="false">
+            <appender-ref ref="ACCESS_LOG"/>
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}┇%-5level┇[%thread]┇%logger{50}┇%msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+
+</configuration>
